@@ -116,6 +116,14 @@
 						<li class="controller"><g:link controller="${c.logicalPropertyName}">${c.fullName}</g:link></li>
 					</g:each>
 				</ul>
+                <div>
+                    <form action="pictures" id="sendPictures">
+                        <input name="custId" id="custId" type="hidden" />
+                        <div class="fallback">
+                            <input name="file" type="file" multiple />
+                        </div>
+                    </form>
+                </div>
 			</div>
 		</div>
 	</body>

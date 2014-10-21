@@ -57,5 +57,6 @@ grails.project.dependency.resolution = {
         compile ':cache:1.0.0'
         runtime ":mongodb:1.1.0.GA"
         runtime ":cors:1.1.4"
+        compile ":burning-image:0.5.1"
     }
 }

@@ -29,7 +29,6 @@ class PictureController {
         render mapResult as GSON
     }
 
-
     def getPicture (){
 
         def pictureId = params.pictureId
@@ -50,6 +49,52 @@ class PictureController {
         }
     }
 
+    def getPicturesByBand(){
+
+        def bandId = params.bandId
+        def result
+
+        setHeaders()
+
+        try{
+            result = pictureService.getPicturesByBand(bandId)
+            response.setStatus(HttpServletResponse.SC_OK)
+            render result as GSON
+
+        }catch (NotFoundException e){
+            renderException(e)
+
+        }catch (Exception e){
+            renderException(e)
+        }
+    }
+
+    def postPicture(){
+
+        println "Entrando al metodo"
+
+        def file = request.getFile('file')
+        def bandId = params.bandId
+        def webrootDir = servletContext.getRealPath("/")
+        def result
+
+        try{
+
+            result = pictureService.postPictures(webrootDir, bandId, file)
+            response.setStatus(HttpServletResponse.SC_CREATED)
+            render result as GSON
+
+        }catch (BadRequestException e){
+
+            renderException(e)
+
+        }catch (Exception e){
+
+            renderException(e)
+
+        }
+    }
+
 
 
 
@@ -64,13 +109,27 @@ class PictureController {
 
     def renderException(def e){
 
-        response.setStatus(e.status)
+        def statusCode
+        def error
+
+        try{
+            statusCode  = e.status
+            error       = e.error
+
+        }catch(Exception ex){
+
+            statusCode = HttpServletResponse.SC_INTERNAL_SERVER_ERROR
+            error = "internal_server_error"
+        }
+
+        response.setStatus(statusCode)
 
         def mapExcepction = [
                 message: e.getMessage(),
-                status: e.status,
-                error: e.error
+                status: statusCode,
+                error: error
         ]
+
         render mapExcepction as GSON
 
     }

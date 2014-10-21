@@ -19,6 +19,7 @@ class PictureTests {
 
         registeredPicture = new Picture(
 
+                bandId: '1',
                 size: '400X300',
                 url: 'http://s0.uvnimg.com/musica/bandamax/fotos/photo/2013-01-02/premios-bandamax-2012-alfombra-8_409x611.jpg',
                 secureUrl: ''
@@ -27,6 +28,8 @@ class PictureTests {
         mockForConstraintsTests(Picture, [registeredPicture])
 
         samplePicture = new Picture(
+
+                bandId: '1',
                 size: '100X200',
                 url:'http://s0.uvnimg.com/musica/bandamax/fotos/photo/2013-01-02/premios-bandamax-2012-alfombra-8_409x611.jpg',
                 secureUrl: 'http://s0.uvnimg.com/musica/bandamax/fotos/photo/2013-01-02/premios-bandamax-2012-alfombra-8_409x611.jpg'
@@ -60,6 +63,17 @@ class PictureTests {
         samplePicture.url = null
         assertFalse(samplePicture.validate())
         assertEquals('nullable', samplePicture.errors['url'])
+    }
+    void test_PictureIsnotValidWhitBandIdIsNullOrBlank(){
+
+        samplePicture.bandId = ''
+        assertFalse(samplePicture.validate())
+        assertEquals('blank', samplePicture.errors['bandId'])
+
+        samplePicture.bandId = null
+        assertFalse(samplePicture.validate())
+        assertEquals('nullable', samplePicture.errors['bandId'])
+
     }
 
 

@@ -11,6 +11,8 @@ webserver/target/classes
 webserver/bin
 webserver/target-eclipse
 webserver/web-app/WEB-INF/classes
+webserver/web-app/uploads
+webserver/web-app/uploads/*
 webserver/.project
 webserver/.classpath
 webserver/.groovy

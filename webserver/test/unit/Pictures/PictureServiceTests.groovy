@@ -12,6 +12,6 @@ import org.junit.*
 class PictureServiceTests {
 
     void testSomething() {
-        fail "Implement me"
+       // fail "Implement me"
     }
 }
