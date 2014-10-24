@@ -12,9 +12,14 @@ class UrlMappings {
             action = [GET: 'notAllowed', POST:'postPicture',PUT:'notAllowed' ,DELETE: 'notAllowed']
         }
 
-        "/pictures/bands/$bandId?"{
+        "/pictures/bands/$bandId?" {
             controller = 'Picture'
             action = [GET:'getPicturesByBand', POST:'notAllowed', PUT:'notAllowed', DELETE:'notAllowed']
+        }
+
+        "/pictures/del/$pictureId?" {
+            controller = 'Picture'
+            action = [GET:'deletePicture', POST:'notAllowed', PUT:'notAllowed', DELETE:'notAllowed']
         }
 
 	}

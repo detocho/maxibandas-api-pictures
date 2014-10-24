@@ -78,6 +78,8 @@ class PictureController {
         def webrootDir = servletContext.getRealPath("/")
         def result
 
+        setHeaders()
+
         try{
 
             result = pictureService.postPictures(webrootDir, bandId, file)
@@ -93,6 +95,20 @@ class PictureController {
             renderException(e)
 
         }
+    }
+
+    def deletePicture(){
+
+        def pictureId = params.pictureId
+        def webrootDir = servletContext.getRealPath("/")
+
+        def result
+
+        setHeaders()
+
+        result = pictureService.deletePicture(pictureId, webrootDir)
+        response.setStatus(HttpServletResponse.SC_OK)
+        render result as GSON
     }
 
 

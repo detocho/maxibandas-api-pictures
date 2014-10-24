@@ -26,6 +26,16 @@ class PictureService {
     def domainMainPicture = 'http://localhost:8080/pictures/'
     def urlMainPicture
 
+    def BUILD_SIZE_MAP = [
+
+            zoom:'origin',
+            listados:'200X160',
+            detalle:'800X600',
+            gallery:'100X75',
+            galleryAdmin:'60X60'
+
+    ]
+
     def getPictures (def pictureId){
 
         Map jsonResult = [:]
@@ -148,7 +158,42 @@ class PictureService {
         resultsPictures
     }
 
-    //TODO la eliminacion de la fotografias
+    def deletePicture(def pictureId, def webrootDir){
+
+
+        Map result = [:]
+
+        if (!pictureId){
+
+            throw new NotFoundException("You must provider pictureId")
+
+        }
+
+        def picture = Picture.findById(pictureId)
+
+        if (!picture){
+
+            throw new NotFoundException("The picture with pictureId="+pictureId+" not found")
+        }
+
+        def nameFilePicture = picture.url.split("uploads")[1]
+        webrootDir = webrootDir+'uploads'
+
+        BUILD_SIZE_MAP.each{ key, value ->
+
+          if(new File(webrootDir+nameFilePicture.replaceAll('origin', value)).delete()){
+              
+          }
+        }
+
+        picture.delete()
+
+        result.message =  "Deleted picture"
+
+        result
+
+    }
+
 
     def folderToSave(webrootDir,bandId){
 
@@ -185,8 +230,6 @@ class PictureService {
         forderTarget
     }
 
-    //TODO Actualizar fotografias
-    //TODO Eliminar las fotografias
 
     def buildSizes(def picture){
 
@@ -194,15 +237,6 @@ class PictureService {
 
         def results = []
 
-        def BUILD_SIZE_MAP = [
-
-                zoom:'origin',
-                listados:'200X160',
-                detalle:'800X600',
-                gallery:'100X75',
-                galleryAdmin:'60X60'
-
-        ]
 
         BUILD_SIZE_MAP.each{ key, value ->
 
