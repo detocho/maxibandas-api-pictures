@@ -1,5 +1,6 @@
 package Pictures
 
+import org.codehaus.groovy.grails.commons.DefaultGrailsApplication
 import java.text.MessageFormat
 import org.apache.ivy.plugins.conflict.ConflictManager
 
@@ -22,8 +23,9 @@ class PictureService {
 
     static transactional = 'mongo'
 
+    def grailsApplication = new DefaultGrailsApplication()
     def burningImageService
-    def domainMainPicture = 'http://localhost:8080/pictures/'
+    def domainMainPicture = grailsApplication.config.domainMainPictures
     def urlMainPicture
 
     def BUILD_SIZE_MAP = [

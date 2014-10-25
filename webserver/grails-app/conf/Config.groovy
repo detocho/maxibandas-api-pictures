@@ -63,9 +63,11 @@ grails.hibernate.cache.queries = false
 environments {
     development {
         grails.logging.jul.usebridge = true
+        domainMainPictures = 'http://localhost:8080/pictures/'
     }
     production {
         grails.logging.jul.usebridge = false
+        domainMainPictures = 'http://api.maxibanda.com.mx/pictures/'
         // TODO: grails.serverURL = "http://www.changeme.com"
     }
 }
