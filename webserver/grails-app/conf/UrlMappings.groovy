@@ -4,8 +4,10 @@ class UrlMappings {
 
         "/$pictureId?" {
             controller = "Picture"
-            action = [GET: 'getPicture', POST:'notAllowed',PUT:'notAllowed' ,DELETE: 'notAllowed']
+            action = [GET: 'getPicture', POST:'postPicture',PUT:'putPicture' ,DELETE: 'deletePicture']
         }
+
+        /*
 
         "/uploadPicture/$bandId?" {
             controller = "Picture"
@@ -21,6 +23,13 @@ class UrlMappings {
             controller = 'Picture'
             action = [GET:'deletePicture', POST:'notAllowed', PUT:'notAllowed', DELETE:'notAllowed']
         }
+        */
+
+        //TODO
+        /*
+        1.- vamos dejar el modo rest
+        2.- para el post, revisar si podemos enviar en el body desde un form html la bandid
+         */
 
 	}
 }

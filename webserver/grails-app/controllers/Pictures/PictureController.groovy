@@ -14,7 +14,9 @@ class PictureController {
 
     def pictureService
 
+
     def notAllowed(){
+
         def method = request.method
 
         response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED)
@@ -49,40 +51,19 @@ class PictureController {
         }
     }
 
-    def getPicturesByBand(){
-
-        def bandId = params.bandId
-        def result
-
-        setHeaders()
-
-        try{
-            result = pictureService.getPicturesByBand(bandId)
-            response.setStatus(HttpServletResponse.SC_OK)
-            render result as GSON
-
-        }catch (NotFoundException e){
-            renderException(e)
-
-        }catch (Exception e){
-            renderException(e)
-        }
-    }
-
     def postPicture(){
 
-        println "Entrando al metodo"
 
-        def file = request.getFile('file')
-        def bandId = params.bandId
-        def webrootDir = servletContext.getRealPath("/")
+        def webrootDir  = servletContext.getRealPath("/")
         def result
 
         setHeaders()
 
         try{
 
-            result = pictureService.postPictures(webrootDir, bandId, file)
+            def file        = request.getFile('file')
+            result          = pictureService.postPictures(webrootDir, file)
+
             response.setStatus(HttpServletResponse.SC_CREATED)
             render result as GSON
 
@@ -97,10 +78,38 @@ class PictureController {
         }
     }
 
+    def putPicture(){
+
+        def pictureId   = params.pictureId
+        def webrootDir  = servletContext.getRealPath("/")
+
+        def result
+
+        setHeaders()
+
+        try{
+
+            def file        = request.getFile('file')
+            result          = pictureService.putPicture(pictureId, webrootDir, file)
+
+            response.setStatus(HttpServletResponse.SC_CREATED)
+            render result as GSON
+
+        }catch(BadRequestException e){
+
+            renderException(e)
+
+        }catch(Exception e){
+
+            renderException(e)
+
+        }
+    }
+
     def deletePicture(){
 
-        def pictureId = params.pictureId
-        def webrootDir = servletContext.getRealPath("/")
+        def pictureId   = params.pictureId
+        def webrootDir  = servletContext.getRealPath("/")
 
         def result
 

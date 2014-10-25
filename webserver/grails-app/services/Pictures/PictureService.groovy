@@ -57,48 +57,10 @@ class PictureService {
         jsonResult
     }
 
-    def getPicturesByBand(def bandId){
+
+    def postPictures(def webrootDir, def file){
 
         def resultsPictures = []
-
-        if (!bandId){
-
-            throw new NotFoundException("You must provider bandId")
-        }
-
-        def pictures = Picture.findAllByBandId(bandId)
-
-        if (!pictures){
-
-            throw  new NotFoundException("The pictures with bandId = "+ bandId + " not found")
-        }
-
-        pictures.each{
-            resultsPictures.add(
-
-                    name: it.id+'-60X60.jpeg',
-                    size: it.size,
-                    url: it.url,
-                    thumbnail_url: it.url.replaceAll('origin','60X60'),
-                    delete_url:''+it.id,
-                    delete_type:'GET'
-            )
-        }
-
-        resultsPictures
-
-    }
-
-
-    def postPictures(def webrootDir, def bandId, def file){
-
-        def resultsPictures = []
-
-
-        if (!bandId){
-
-            throw new NotFoundException("You must provider bandId")
-        }
 
         if (!file){
 
@@ -107,7 +69,7 @@ class PictureService {
 
 
         def newPicture =  new Picture(
-                bandId:bandId,
+
                 url: 'http://dominio/uploads/fotoProcess.jpg',
                 size:'origin',
                 secureUrl: ''
@@ -123,37 +85,37 @@ class PictureService {
 
         def pictureId = newPicture.id
 
-        def folderTarget = folderToSave(webrootDir,bandId)
-        def fileName = pictureId+"-origin." + file.getContentType().replaceAll("image/","")
+        def folderTarget = folderToSave(webrootDir)
+        def fileName = "MB"+pictureId+"-origin." + file.getContentType().replaceAll("image/","")
         urlMainPicture = urlMainPicture+fileName
 
 
-        File fileDestiny = new File(folderTarget + "/" + fileName)
+        File fileDestiny = new File(folderTarget + fileName)
         file.transferTo(fileDestiny)
 
 
 
         burningImageService.doWith(fileDestiny.toString(), folderTarget)
-                .execute (pictureId+'-800X600', {
-                    it.scaleApproximate(800,600)
-                    //it.watermark(pathToWatermark, ['right': 10, 'bottom': 10])
-                })
-                .execute (pictureId+'-200X160',{
-                    it.scaleApproximate(200,160)
-                })
-                .execute (pictureId+'-100X75',{
-                    it.scaleApproximate(100,75)
-                })
-                .execute (pictureId+'-60X60',{
-                    it.scaleApproximate(60,60)
-                })
+                .execute ("MB"+pictureId+'-800X600', {
+            it.scaleApproximate(800,600)
+            //it.watermark(pathToWatermark, ['right': 10, 'bottom': 10])
+        })
+                .execute ("MB"+pictureId+'-200X160',{
+            it.scaleApproximate(200,160)
+        })
+                .execute ("MB"+pictureId+'-100X75',{
+            it.scaleApproximate(100,75)
+        })
+                .execute ("MB"+pictureId+'-60X60',{
+            it.scaleApproximate(60,60)
+        })
 
 
         newPicture.url = urlMainPicture
         newPicture.save()
 
 
-        resultsPictures= getPicturesByBand(bandId)
+        resultsPictures= buildSizes(newPicture)
 
         resultsPictures
     }
@@ -181,9 +143,9 @@ class PictureService {
 
         BUILD_SIZE_MAP.each{ key, value ->
 
-          if(new File(webrootDir+nameFilePicture.replaceAll('origin', value)).delete()){
-              
-          }
+            if(new File(webrootDir+nameFilePicture.replaceAll('origin', value)).delete()){
+
+            }
         }
 
         picture.delete()
@@ -194,12 +156,29 @@ class PictureService {
 
     }
 
+    def putPicture (def pictureId, def webrootDir, def file ){
 
-    def folderToSave(webrootDir,bandId){
+        def resultPictures = []
+
+        if (!file){
+
+            throw new BadRequestException("You must provider file picture")
+        }
+
+        def result = deletePicture(pictureId, webrootDir)
+
+        resultPictures = postPictures(webrootDir, file)
+
+        resultPictures
+
+    }
+
+
+    def folderToSave(webrootDir){
 
         def cal = Calendar.instance
         def year = cal.get(Calendar.YEAR)
-        def month = cal.get(Calendar.MONTH)
+        def month = cal.get(Calendar.MONTH) + 1 // por que los meses van de 0  al 11
 
         def folderName = "uploads/" + year +"/"+ month + "/"
 
@@ -208,24 +187,14 @@ class PictureService {
 
         if (!folderDate.exists())
         {
-            File folderUploads = new File(webrootDir,"uploads/");
 
-            folderUploads.deleteDir() //Borramos las carpetas y archivos almacenados
-            folderUploads.mkdir()
             folderDate.mkdirs();
-            println "Termino de crear el folder..."
+
         }
 
-        File folder = new File(webrootDir,folderName+bandId);
+        def forderTarget  = webrootDir + folderName
 
-        if (!folder.exists())
-        {
-            folder.mkdir();
-        }
-
-        def forderTarget  = webrootDir + folderName + bandId
-
-        urlMainPicture = domainMainPicture+folderName+bandId+"/"
+        urlMainPicture = domainMainPicture+folderName
 
         forderTarget
     }
@@ -245,7 +214,6 @@ class PictureService {
             def secureUrl = ''
 
             results.add(
-                    band_id     : picture.bandId,
                     size        : size,
                     url         : url,
                     secure_url  : secureUrl
