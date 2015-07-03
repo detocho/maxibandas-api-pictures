@@ -67,8 +67,8 @@ environments {
     }
     production {
         grails.logging.jul.usebridge = false
-        //domainMainPictures = 'http://api.maxibanda.com.mx/pictures/'
-        domainMainPictures = 'http://images.maxibanda.mx/pictures/'
+        domainMainPictures = 'http://api.maxibanda.com.mx/pictures/'
+        //domainMainPictures = 'http://images.maxibanda.mx/pictures/'
         // TODO: grails.serverURL = "http://www.changeme.com"
     }
 }
